@@ -1,0 +1,31 @@
+{
+  "name": "myria-backend",
+  "version": "1.0.0",
+  "description": "Architecture backend express",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": "https://github.com/OpensourceLabel/myria-backend.git",
+  "author": "Ezz <67949453+Jeremiah-Ezz@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.9.1",
+    "bcrypt": "*",
+    "concurrently": "*",
+    "cors": "*",
+    "dotenv": "*",
+    "express": "*",
+    "generate-password": "*",
+    "jsonwebtoken": "*",
+    "morgan": "*",
+    "nodemailer": "*",
+    "nodemon": "*",
+    "prisma": "*",
+    "validator": "*"
+  },
+  "prisma": {
+    "schema": "src/models/schema.prisma"
+  }
+}
