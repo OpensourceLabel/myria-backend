@@ -1,17 +1,20 @@
 {
-  "name": "myria-backend",
+  "name": "name_App",
   "version": "1.0.0",
-  "description": "Architecture backend express",
-  "main": "app.js",
+  "description": "Name App",
+  "main": "app.mjs",
   "type": "module",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "start-client": "cd ../Client && pnpm dev",
+    "dev": "concurrently -n 'server,client' -c 'red,green' \"pnpm start\" \"pnpm run start-client\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "https://github.com/OpensourceLabel/myria-backend.git",
+  "repository": "https://github.com/uhtec/Api_Gelux.git",
   "author": "Ezz <67949453+Jeremiah-Ezz@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
-    "@prisma/client": "^5.9.1",
+    "@prisma/client": "*",
     "bcrypt": "*",
     "concurrently": "*",
     "cors": "*",
@@ -19,7 +22,9 @@
     "express": "*",
     "generate-password": "*",
     "jsonwebtoken": "*",
+    "moment": "*",
     "morgan": "*",
+    "multer": "*",
     "nodemailer": "*",
     "nodemon": "*",
     "prisma": "*",

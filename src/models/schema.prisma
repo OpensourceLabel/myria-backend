@@ -16,6 +16,7 @@ model User {
   email     String?  @unique @db.VarChar(255)
   username  String?  @unique @db.VarChar(255)
   password  String?  @db.VarChar(255)
+  sexe      Sexe     @default(AUCUN)
   role      Role     @default(ADMIN)
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -25,4 +26,10 @@ model User {
 
 enum Role {
   ADMIN
+}
+
+enum Sexe {
+  AUCUN
+  F
+  M
 }
