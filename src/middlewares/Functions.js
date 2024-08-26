@@ -56,27 +56,6 @@ export const checkDate = (date) => {
         throw `Attention, tentative d'enregistrement opération d'une date ulterieure.`
 };
 
-// check Solde Mois précédent
-export const checkSoldeMoisPrecedent = async (mouvement, mois, devise) => {
-    const moisPrec = mouvement == `SOLDE` ? new Date(mois) :
-        GetMonthmoinsUn(mois),
-        data = await operation.findFirst({
-            where: {
-                deleted: false,
-                mois: moisPrec,
-                mouvement: `SOLDE`,
-                devise: devise
-            }
-        });
-
-    // if mouvement is not `SOLDE`
-    if (mouvement != `SOLDE`) {
-        if (!data) throw `Le solde ${devise} ${FormatMonth(moisPrec)} n'est pas encore enregistré...`;
-    } else {
-        if (data) throw `Le solde du mois ${FormatMonth(moisPrec)} déjà enregistré...`;
-    }
-};
-
 // check number
 export const checkNumber = (object) => {
     for (const i in object) {
