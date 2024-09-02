@@ -1,8 +1,8 @@
 {
-  "name": "name_App",
+  "name": "Api_name",
   "version": "1.0.0",
-  "description": "Name App",
-  "main": "app.mjs",
+  "description": "Description API",
+  "main": "app.js",
   "type": "module",
   "scripts": {
     "start": "nodemon app.js",
@@ -10,7 +10,7 @@
     "dev": "concurrently -n 'server,client' -c 'red,green' \"pnpm start\" \"pnpm run start-client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "https://github.com/uhtec/Api_Gelux.git",
+  "repository": "https://github.com/OpensourceLabel/myria-backend.git",
   "author": "Ezz <67949453+Jeremiah-Ezz@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
@@ -28,6 +28,7 @@
     "nodemailer": "*",
     "nodemon": "*",
     "prisma": "*",
+    "twilio": "^5.2.2",
     "validator": "*"
   },
   "prisma": {

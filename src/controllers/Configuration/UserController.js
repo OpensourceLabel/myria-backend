@@ -36,11 +36,11 @@ export default {
     },
 
     // get All
-    getAll: async ({ }, res) => {
+    getAll: async ({ query }, res) => {
         try {
-            const data = await UserService?.getAll();
+            const data = await UserService?.getAll(query);
             checkData(data)
-            successMessage(res, `${data.length} resultat(s) trouvé(s)`, data)
+            successMessage(res, `${data?.list?.length} resultat(s) trouvé(s)`, data)
         } catch (error) {
             errorMessage(res, error)
         }

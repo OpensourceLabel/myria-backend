@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 import { errorMessage } from "../middlewares/Functions.js";
 
-export const GenerateToken = (data) => {
+export const GenerateToken = (data, rememberMe) => {
     return jwt.sign(
         data,
         process.env.SECRET_TOKEN,
-        { expiresIn: `24h` }
+        { expiresIn: rememberMe ? '30d' : '8h' }
     );
 };
 

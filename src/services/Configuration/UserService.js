@@ -40,20 +40,37 @@ export default {
         if (!compareSync(userData?.password, userInfo?.password))
             throw `Mot de passe incorrect...`;
 
+        const { password, ...info } = userInfo;
+
         return {
-            ...userInfo,
-            token: GenerateToken(userInfo)
+            ...info,
+            token: GenerateToken(userInfo, userData?.rememberMe)
         }
     },
 
     // get all user
-    getAll: async () => {
-        return (await user.findMany({
-            where: { deleted: false }
-        })).map(data => {
-            const { deleted, createdAt, updatedAt, password, ...infos } = data;
-            return infos;
-        })
+    getAll: async (query) => {
+        let page = !parseInt(query?.page) ? 1 : parseInt(query.page),
+            limit = !parseInt(query?.limit) ? 10 : parseInt(query?.limit),
+            totalAccount = await user.count({ where: { deleted: false } }),
+
+            list = (await user.findMany({
+                where: { deleted: false },
+                skip: (page - 1) * limit,
+                take: limit
+            })).map(data => {
+                const { deleted, createdAt, entrepriseId, updatedAt, password, Entreprise, ...infos } = data;
+                return { ...infos };
+            });
+
+        return {
+            pagination: {
+                page,
+                limit,
+                totalPage: Math.ceil(totalAccount / limit)
+            },
+            list
+        }
     },
 
     // get by ID

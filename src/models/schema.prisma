@@ -24,6 +24,13 @@ model User {
   deleted   Boolean  @default(false)
 }
 
+// model Model {
+//   id        String   @id @default(cuid()) @db.VarChar(255)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   deleted   Boolean  @default(false)
+// }
+
 enum Role {
   ADMIN
 }

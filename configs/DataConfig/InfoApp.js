@@ -5,7 +5,7 @@ export default {
         fullname: `Administateur`,
         email: `admin@exemple.com`,
         role: `ADMIN`,
-        username: `admin`,
+        username: `admin@exemple.com`,
         password: hashSync(`2298`, genSaltSync(10))
     }
 }
