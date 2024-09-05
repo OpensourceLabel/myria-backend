@@ -1,11 +1,11 @@
 import { errorMessage, successMessage } from "../../middlewares/Functions.js";
-import AgentService from "../../services/Configuration/AgentService.js";
+import EntrepriseService from "../../services/Configuration/EntrepriseService.js";
 
 export default {
     // create
     create: async ({ body }, res) => {
         try {
-            const data = await AgentService?.create(body);
+            const data = await EntrepriseService?.create(body);
             successMessage(res, `Operation reussie...`, data)
         } catch (error) {
             errorMessage(res, error)
@@ -15,7 +15,7 @@ export default {
     // Get
     get: async ({ query }, res) => {
         try {
-            const data = await AgentService?.get(query);
+            const data = await EntrepriseService?.get(query);
             successMessage(res, `${data?.list?.length} resultat(s) trouvé(s)`, data)
         } catch (error) {
             errorMessage(res, error)
@@ -25,7 +25,7 @@ export default {
     // Get list
     getList: async ({ }, res) => {
         try {
-            const data = await AgentService?.getList();
+            const data = await EntrepriseService?.getList();
             successMessage(res, `${data?.length} resultat(s) trouvé(s)`, data)
         } catch (error) {
             errorMessage(res, error)
@@ -35,7 +35,7 @@ export default {
     // GetById
     getByID: async ({ params }, res) => {
         try {
-            const data = await AgentService?.getByID(params?.id);
+            const data = await EntrepriseService?.getByID(params?.id);
             successMessage(res, `Detail info`, data)
         } catch (error) {
             errorMessage(res, error)
@@ -45,7 +45,7 @@ export default {
     // Update
     update: async ({ params, body }, res) => {
         try {
-            const data = await AgentService?.update(params?.id, body);
+            const data = await EntrepriseService?.update(params?.id, body);
             successMessage(res, `Modification reussie...`, data)
         } catch (error) {
             errorMessage(res, error)
@@ -55,7 +55,7 @@ export default {
     // Delete
     delete: async ({ params }, res) => {
         try {
-            await AgentService?.delete(params?.id);
+            await EntrepriseService?.delete(params?.id);
             successMessage(res, `Suppression reussie...`)
         } catch (error) {
             errorMessage(res, error)
@@ -65,7 +65,7 @@ export default {
     // DeleteMany
     deleteMany: async ({ body }, res) => {
         try {
-            const data = await AgentService?.deleteMany(body?.data);
+            const data = await EntrepriseService?.deleteMany(body?.data);
             successMessage(res, `${data?.count} ligne(s) Supprimée(s) avec succès`)
         } catch (error) {
             errorMessage(res, error)
@@ -75,7 +75,7 @@ export default {
     // DeleteAll
     deleteAll: async ({ }, res) => {
         try {
-            const data = await AgentService?.deleteAll();
+            const data = await EntrepriseService?.deleteAll();
             successMessage(res, `${data?.count} ligne(s) Supprimée(s) avec succès`)
         } catch (error) {
             errorMessage(res, error)

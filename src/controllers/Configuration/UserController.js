@@ -5,7 +5,7 @@ import {
     isValidEmail,
     successMessage
 } from "../../middlewares/Functions.js";
-import { DecodedToken } from "../../services/Auth.js";
+// import { DecodedToken } from "../../services/Auth.js";
 import UserService from "../../services/Configuration/UserService.js";
 
 export default {
@@ -76,13 +76,14 @@ export default {
     },
 
     // update password
-    updatePassword: async ({ headers, body }, res) => {
+    updatePassword: async ({ headers, params, body }, res) => {
         try {
             checkEmpty(body)
-            const { old, newPassword } = body,
-                userID = DecodedToken(headers?.authorization)?.id;
+            const { oldPassword, newPassword } = body,
+                userID = params?.id;;
+            // userID = DecodedToken(headers?.authorization)?.id;
 
-            await UserService?.updatePassword(userID, old, newPassword);
+            await UserService?.updatePassword(userID, oldPassword, newPassword);
             successMessage(res, `Mot de passe modifié avec succès`)
         } catch (error) {
             errorMessage(res, error)
@@ -117,7 +118,7 @@ export default {
         } catch (error) {
             errorMessage(res, error)
         }
-    },
+    }
 }
 
 

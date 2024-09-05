@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import validator from "validator";
 
-const { user, equipement, entreeStock, outStock, agent, client, reabonnement } = new PrismaClient();
+const { user, entreprise } = new PrismaClient();
 
 // Response status 500
 export const errorMessage = (res, message) => {
@@ -84,55 +84,11 @@ export const getDaysInMonth = (year, month) => {
     return new Date(year, month + 1, 0).getDate();
 };
 
-// Generate reference equipement
-export const EquipementReference = async () => {
-    const order = await equipement.count() + 1;
-    return `EQ${order < 10 ? `00${order}` :
+// Generate reference entreprise
+export const EntrepriseReference = async () => {
+    const order = await entreprise.count() + 1;
+    return `E${order < 10 ? `00${order}` :
         order < 100 ? `0${order}` : order}`;
-};
-
-// Generate reference client
-export const ClientReference = async () => {
-    const order = await client.count() + 1;
-    return `CL${order < 10 ? `00${order}` :
-        order < 100 ? `0${order}` : order}`;
-};
-
-// Generate reference agent
-export const AgentReference = async (categorie) => {
-    const order = await agent.count({ where: { categorie: categorie } }) + 1;
-    return `${categorie === `MARKETEUR` ? `AC` : `IT`}${order < 10 ? `00${order}` :
-        order < 100 ? `0${order}` : order}/UHTEC`;
-};
-
-// Generate reference entreeStock
-export const EntrerStockReference = async () => {
-    const order = await entreeStock.count() + 1;
-    return `IN${order < 10 ? `00${order}` :
-        order < 100 ? `0${order}` : order}`;
-};
-
-// Generate reference outStock
-export const SortieStockReference = async () => {
-    const order = await outStock.count() + 1;
-    return `OUT${order < 10 ? `00${order}` :
-        order < 100 ? `0${order}` : order}`;
-};
-
-// Generate reference abonnement
-export const AbonnementReference = async () => {
-    const order = await reabonnement.count() + 1;
-    return `ABNM-${order < 10 ? `00${order}` :
-        order < 100 ? `0${order}` : order}`;
-};
-
-// Calcule date fin Abonnement
-export const CalculerDateFinAbonnement = (nombreDeJours) => {
-    // Obtenir la date actuelle
-    const dateActuelle = new Date();
-    // Ajouter le nombre de jours à la date actuelle
-    dateActuelle.setDate(dateActuelle.getDate() + nombreDeJours);
-    return dateActuelle;
 };
 
 

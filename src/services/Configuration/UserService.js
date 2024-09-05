@@ -27,6 +27,7 @@ export default {
                 sexe: true,
                 role: true,
                 password: true,
+                entrepriseId: true,
                 active: true
             }
         });
@@ -42,10 +43,7 @@ export default {
 
         const { password, ...info } = userInfo;
 
-        return {
-            ...info,
-            token: GenerateToken(userInfo, userData?.rememberMe)
-        }
+        return { ...info, token: GenerateToken(userInfo, userData?.rememberMe) }
     },
 
     // get all user

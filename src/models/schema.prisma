@@ -10,18 +10,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Entreprise {
+  id          String   @id @default(cuid()) @db.VarChar(255)
+  reference   String   @unique @db.VarChar(50)
+  nom         String?  @db.VarChar(255)
+  idNat       String?  @db.VarChar(255)
+  rccm        String?  @db.VarChar(255)
+  numeroImpot String?  @db.VarChar(255)
+  adresse     Json?
+  contact     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deleted     Boolean  @default(false)
+  User        User[]
+}
+
 model User {
-  id        String   @id @default(cuid()) @db.VarChar(255)
-  fullname  String?  @db.VarChar(100)
-  email     String?  @unique @db.VarChar(255)
-  username  String?  @unique @db.VarChar(255)
-  password  String?  @db.VarChar(255)
-  sexe      Sexe     @default(AUCUN)
-  role      Role     @default(ADMIN)
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deleted   Boolean  @default(false)
+  id           String      @id @default(cuid()) @db.VarChar(255)
+  entrepriseId String?     @db.VarChar(255)
+  fullname     String?     @db.VarChar(100)
+  email        String?     @unique @db.VarChar(255)
+  username     String?     @unique @db.VarChar(255)
+  password     String?     @db.VarChar(255)
+  sexe         Sexe        @default(AUCUN)
+  role         Role        @default(ADMIN)
+  active       Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deleted      Boolean     @default(false)
+  Entreprise   Entreprise? @relation(fields: [entrepriseId], references: [id])
+
+  @@index([entrepriseId])
 }
 
 // model Model {
