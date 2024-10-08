@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import validator from "validator";
 
-const { user, entreprise } = new PrismaClient();
+const { user, etablissement, exemple } = new PrismaClient();
 
 // Response status 500
 export const errorMessage = (res, message) => {
@@ -85,11 +85,19 @@ export const getDaysInMonth = (year, month) => {
 };
 
 // Generate reference entreprise
-export const EntrepriseReference = async () => {
-    const order = await entreprise.count() + 1;
+export const EtablissementReference = async () => {
+    const order = await etablissement.count() + 1;
     return `E${order < 10 ? `00${order}` :
         order < 100 ? `0${order}` : order}`;
 };
+
+// Generate reference exemple
+export const ExempleReference = async (etablissementId) => {
+    const order = await exemple.count({ where: { etablissementId } }) + 1;
+    return `EX${order < 10 ? `00${order}` :
+        order < 100 ? `0${order}` : order}`;
+};
+
 
 
 

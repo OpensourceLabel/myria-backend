@@ -1,11 +1,15 @@
-import { errorMessage, successMessage } from "../../middlewares/Functions.js";
-import EntrepriseService from "../../services/Configuration/EntrepriseService.js";
+import { checkEmpty, errorMessage, successMessage } from "../../middlewares/Functions.js";
+import { DecodedToken } from "../../services/Auth.js";
+import ExempleService from "../../services/Configuration/ExempleService.js";
+
 
 export default {
     // create
-    create: async ({ body }, res) => {
+    create: async ({ headers, body }, res) => {
         try {
-            const data = await EntrepriseService?.create(body);
+            checkEmpty(body)
+            const { etablissementId } = DecodedToken(headers?.authorization),
+                data = await ExempleService?.create({ ...body, etablissementId });
             successMessage(res, `Operation reussie...`, data)
         } catch (error) {
             errorMessage(res, error)
@@ -13,19 +17,21 @@ export default {
     },
 
     // Get
-    get: async ({ query }, res) => {
+    get: async ({ headers, query }, res) => {
         try {
-            const data = await EntrepriseService?.get(query);
+            const { etablissementId } = DecodedToken(headers?.authorization),
+                data = await ExempleService?.get(query, etablissementId);
             successMessage(res, `${data?.list?.length} resultat(s) trouvé(s)`, data)
         } catch (error) {
             errorMessage(res, error)
         }
     },
 
-    // Get list
-    getList: async ({ }, res) => {
+    // Get All
+    getAll: async ({ headers }, res) => {
         try {
-            const data = await EntrepriseService?.getList();
+            const { etablissementId } = DecodedToken(headers?.authorization),
+                data = await ExempleService?.getAll(etablissementId);
             successMessage(res, `${data?.length} resultat(s) trouvé(s)`, data)
         } catch (error) {
             errorMessage(res, error)
@@ -35,7 +41,7 @@ export default {
     // GetById
     getByID: async ({ params }, res) => {
         try {
-            const data = await EntrepriseService?.getByID(params?.id);
+            const data = await ExempleService?.getByID(params?.id);
             successMessage(res, `Detail info`, data)
         } catch (error) {
             errorMessage(res, error)
@@ -45,7 +51,8 @@ export default {
     // Update
     update: async ({ params, body }, res) => {
         try {
-            const data = await EntrepriseService?.update(params?.id, body);
+            checkEmpty(body)
+            const data = await ExempleService?.update(params?.id, body);
             successMessage(res, `Modification reussie...`, data)
         } catch (error) {
             errorMessage(res, error)
@@ -55,7 +62,7 @@ export default {
     // Delete
     delete: async ({ params }, res) => {
         try {
-            await EntrepriseService?.delete(params?.id);
+            await ExempleService?.delete(params?.id);
             successMessage(res, `Suppression reussie...`)
         } catch (error) {
             errorMessage(res, error)
@@ -65,7 +72,7 @@ export default {
     // DeleteMany
     deleteMany: async ({ body }, res) => {
         try {
-            const data = await EntrepriseService?.deleteMany(body?.data);
+            const data = await ExempleService?.deleteMany(body?.data);
             successMessage(res, `${data?.count} ligne(s) Supprimée(s) avec succès`)
         } catch (error) {
             errorMessage(res, error)
@@ -73,9 +80,10 @@ export default {
     },
 
     // DeleteAll
-    deleteAll: async ({ }, res) => {
+    deleteAll: async ({ headers }, res) => {
         try {
-            const data = await EntrepriseService?.deleteAll();
+            const { etablissementId } = DecodedToken(headers?.authorization),
+                data = await ExempleService?.deleteAll(etablissementId);
             successMessage(res, `${data?.count} ligne(s) Supprimée(s) avec succès`)
         } catch (error) {
             errorMessage(res, error)

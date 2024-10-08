@@ -1,16 +1,13 @@
 import { genSaltSync, hashSync } from "bcrypt";
 
 export default {
-    DefaultEntreprise: {
+    DefaulDevise: {
+        code: `CDF`,
+        libelle: `Franc Congolais`
+    },
+    DefaultEtablissement: {
         nom: `Nom Entreprise`,
-        idNat: `N° Identité nationale`,
-        rccm: `RCCM`,
-        numeroImpot: `N° Impot`,
-        adresse: {
-            pays: `Pays`,
-            ville: `Ville`,
-            rue: `rue`
-        },
+        adresse: `Adresse`,
         contact: {
             email: `contact@domain.com`,
             telephone: `N° telephone`
@@ -22,5 +19,15 @@ export default {
         role: `ADMIN`,
         username: `admin@exemple.com`,
         password: hashSync(`2298`, genSaltSync(10))
-    }
+    },
+    Exemple: [
+        {
+            reference: `EX001`,
+            libelle: `EXEMPLE 1`
+        },
+        {
+            reference: `EX002`,
+            libelle: `EXEMPLE 2`
+        }
+    ]
 }

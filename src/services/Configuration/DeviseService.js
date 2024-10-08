@@ -1,20 +1,18 @@
 import { PrismaClient } from "@prisma/client";
-import { EntrepriseReference } from "../../middlewares/Functions.js";
-const { entreprise } = new PrismaClient();
+const { devise } = new PrismaClient();
 
 export default {
     // create
     create: async (data) => {
-        const reference = await EntrepriseReference();
-        return await entreprise.create({ data: { ...data, reference } })
+        return await devise.create({ data });
     },
     // Get
     get: async (query) => {
         let page = !parseInt(query?.page) ? 1 : parseInt(query.page),
             limit = !parseInt(query?.limit) ? 10 : parseInt(query?.limit),
-            totalAccount = await entreprise.count({ where: { deleted: false } }),
+            totalAccount = await devise.count({ where: { deleted: false } }),
 
-            list = await entreprise.findMany({
+            list = await devise.findMany({
                 where: { deleted: false },
                 skip: (page - 1) * limit,
                 take: limit
@@ -29,46 +27,41 @@ export default {
             list
         }
     },
-    // Get List
-    getList: async () => {
-        return (await entreprise.findMany({
+    // Get all
+    getAll: async () => {
+        return await devise.findMany({
             where: { deleted: false }
-        }))?.map(data => {
-            return {
-                value: data?.id,
-                label: data?.nom,
-            }
-        });
+        })
     },
     // GetById
     getByID: async (id) => {
-        return await entreprise.findUnique({
+        return await devise.findUnique({
             where: { id }
         });
     },
     // Update
     update: async (id, data) => {
-        return await entreprise.update({
+        return await devise.update({
             where: { id }, data
         });
     },
     // Delete
     delete: async (id) => {
-        return await entreprise.update({
+        return await devise.update({
             where: { id },
             data: { deleted: true }
         });
     },
     // DeleteMany
     deleteMany: async (ids) => {
-        return await entreprise.updateMany({
+        return await devise.updateMany({
             where: { id: { in: ids } },
             data: { deleted: true }
         });
     },
     // DeleteAll
     deleteAll: async () => {
-        return await entreprise.updateMany({
+        return await devise.updateMany({
             data: { deleted: true }
         });
     }

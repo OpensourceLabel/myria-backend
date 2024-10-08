@@ -10,37 +10,64 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Entreprise {
-  id          String   @id @default(cuid()) @db.VarChar(255)
-  reference   String   @unique @db.VarChar(50)
-  nom         String?  @db.VarChar(255)
-  idNat       String?  @db.VarChar(255)
-  rccm        String?  @db.VarChar(255)
-  numeroImpot String?  @db.VarChar(255)
-  adresse     Json?
-  contact     Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deleted     Boolean  @default(false)
-  User        User[]
+model Devise {
+  id            String          @id @default(cuid()) @db.VarChar(255)
+  code          String          @unique @db.VarChar(255)
+  libelle       String?         @db.VarChar(255)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  deleted       Boolean         @default(false)
+  Etablissement Etablissement[]
+}
+
+model Etablissement {
+  id            String   @id @default(cuid()) @db.VarChar(255)
+  reference     String   @unique @db.VarChar(50)
+  nom           String?  @db.VarChar(255)
+  adresse       String?  @db.VarChar(255)
+  contact       Json?
+  defaultDevise String?  @db.VarChar(255)
+  logo          String?  @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deleted       Boolean  @default(false)
+  User          User[]
+  Devise        Devise?  @relation(fields: [defaultDevise], references: [id])
+
+  Exemple Exemple[]
+
+  @@index([defaultDevise])
 }
 
 model User {
-  id           String      @id @default(cuid()) @db.VarChar(255)
-  entrepriseId String?     @db.VarChar(255)
-  fullname     String?     @db.VarChar(100)
-  email        String?     @unique @db.VarChar(255)
-  username     String?     @unique @db.VarChar(255)
-  password     String?     @db.VarChar(255)
-  sexe         Sexe        @default(AUCUN)
-  role         Role        @default(ADMIN)
-  active       Boolean     @default(true)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  deleted      Boolean     @default(false)
-  Entreprise   Entreprise? @relation(fields: [entrepriseId], references: [id])
+  id              String         @id @default(cuid()) @db.VarChar(255)
+  etablissementId String?        @db.VarChar(255)
+  fullname        String?        @db.VarChar(100)
+  email           String?        @unique @db.VarChar(255)
+  username        String?        @unique @db.VarChar(255)
+  password        String?        @db.VarChar(255)
+  sexe            Sexe           @default(AUCUN)
+  role            Role           @default(ADMIN)
+  active          Boolean        @default(true)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  deleted         Boolean        @default(false)
+  Etablissement   Etablissement? @relation(fields: [etablissementId], references: [id])
 
-  @@index([entrepriseId])
+  @@index([etablissementId])
+}
+
+model Exemple {
+  id              String         @id @default(cuid()) @db.VarChar(255)
+  etablissementId String?        @db.VarChar(255)
+  reference       String         @unique @db.VarChar(50)
+  libelle         String?        @db.VarChar(100)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  deleted         Boolean        @default(false)
+  Etablissement   Etablissement? @relation(fields: [etablissementId], references: [id])
+
+  @@index([etablissementId])
 }
 
 // model Model {

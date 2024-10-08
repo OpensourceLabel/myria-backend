@@ -5,21 +5,25 @@ import {
     isValidEmail,
     successMessage
 } from "../../middlewares/Functions.js";
+import { DecodedToken } from "../../services/Auth.js";
 // import { DecodedToken } from "../../services/Auth.js";
 import UserService from "../../services/Configuration/UserService.js";
 
 export default {
     // create
-    create: async ({ body }, res) => {
+    create: async ({ headers, body }, res) => {
         try {
             const { email, fullname, role } = body;
 
             checkEmpty({ email, fullname, role })
             await isValidEmail(email)
 
-            const data = await UserService?.create(body);
+            const { etablissementId } = DecodedToken(headers?.authorization),
+                data = await UserService?.create({ ...body, etablissementId });
             successMessage(res, `utilisateur ajouté avec succès`, data)
         } catch (error) {
+            console.error(error);
+            
             errorMessage(res, error)
         }
     },
@@ -31,6 +35,8 @@ export default {
             const data = await UserService?.login(body);
             successMessage(res, `Connexion établie`, data)
         } catch (error) {
+            console.error(error);
+
             errorMessage(res, error)
         }
     },
@@ -63,7 +69,8 @@ export default {
             const { email, fullname, role } = body;
 
             email ? checkEmpty({ email }) :
-                checkEmpty({ fullname, role })
+                role ? checkEmpty({ role }) :
+                    checkEmpty({ fullname })
 
             if (email) {
                 await isValidEmail(email)
@@ -83,7 +90,7 @@ export default {
                 userID = params?.id;;
             // userID = DecodedToken(headers?.authorization)?.id;
 
-            await UserService?.updatePassword(userID, oldPassword, newPassword);
+            await UserService?.updatePassword(userID, { oldPassword, newPassword });
             successMessage(res, `Mot de passe modifié avec succès`)
         } catch (error) {
             errorMessage(res, error)
@@ -115,6 +122,25 @@ export default {
         try {
             await UserService?.delete(params?.id);
             successMessage(res, `Utilisateur supprimé avec succès`)
+        } catch (error) {
+            errorMessage(res, error)
+        }
+    },
+    // DeleteMany
+    deleteMany: async ({ body }, res) => {
+        try {
+            const data = await UserService?.deleteMany(body?.data);
+            successMessage(res, `${data?.count} ligne(s) Supprimée(s) avec succès`)
+        } catch (error) {
+            errorMessage(res, error)
+        }
+    },
+
+    // DeleteAll
+    deleteAll: async ({ }, res) => {
+        try {
+            const data = await UserService?.deleteAll();
+            successMessage(res, `${data?.count} ligne(s) Supprimée(s) avec succès`)
         } catch (error) {
             errorMessage(res, error)
         }

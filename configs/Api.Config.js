@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { EntrepriseReference } from "../src/middlewares/Functions.js";
+import { EtablissementReference } from "../src/middlewares/Functions.js";
 import InfoApp from "./DataConfig/InfoApp.js";
 
 const prisma = new PrismaClient();
@@ -17,19 +17,25 @@ export const CheckApi = async () => {
 
 // Generate super admin
 async function GenerateDefaultInfos() {
-    const entreprise = await prisma.entreprise.findFirst({
+    const devise = await prisma.devise.findFirst({
         where: { deleted: false }
     });
 
-    if (!entreprise) {
-        const reference = await EntrepriseReference();
-        await prisma.Entreprise.create({
+    if (!devise) {
+        const reference = await EtablissementReference();
+        await prisma.devise.create({
             data: {
-                ...InfoApp?.DefaultEntreprise,
-                reference: reference,
-                User: { create: { ...InfoApp?.AdminSys } }
+                ...InfoApp?.DefaulDevise,
+                Etablissement: {
+                    create: {
+                        ...InfoApp?.DefaultEtablissement,
+                        reference: reference,
+                        User: { create: { ...InfoApp?.AdminSys } },
+                        Exemple: { createMany: { data: InfoApp?.Exemple } }
+                    }
+                }
             }
         });
-        console.log(`Entreprise par defaut générée avec succès...`);
+        console.log(`Informations par defaut générées avec succès...`);
     }
 };

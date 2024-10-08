@@ -2,33 +2,31 @@ import { PrismaClient } from "@prisma/client";
 import { hashSync, genSaltSync, compareSync } from "bcrypt";
 import { generate } from "generate-password";
 import { GenerateToken } from "../Auth.js";
-
 const { user } = new PrismaClient();
 
 export default {
     // create
-    create: async (userData) => {
-        await user.create({
+    create: async (data) => {
+        return await user.create({
             data: {
-                ...userData,
-                username: userData?.email,
+                ...data,
+                username: data?.email,
                 password: hashSync(`2298`, genSaltSync(10))
             }
-        })
+        });
     },
-
     // login
-    login: async (userData) => {
+    login: async (data) => {
         const userInfo = await user.findUnique({
-            where: { username: userData?.username },
+            where: { username: data?.username },
             select: {
                 id: true,
                 fullname: true,
                 sexe: true,
                 role: true,
                 password: true,
-                entrepriseId: true,
-                active: true
+                etablissementId: true,
+                active: true,
             }
         });
 
@@ -38,15 +36,14 @@ export default {
         if (!userInfo?.active)
             throw `Accès intérdit au système.`;
 
-        if (!compareSync(userData?.password, userInfo?.password))
+        if (!compareSync(data?.password, userInfo?.password))
             throw `Mot de passe incorrect...`;
 
-        const { password, ...info } = userInfo;
+        const { password, active, ...info } = userInfo;
 
-        return { ...info, token: GenerateToken(userInfo, userData?.rememberMe) }
+        return { ...info, token: GenerateToken(info, data?.rememberMe) }
     },
-
-    // get all user
+    // Get
     getAll: async (query) => {
         let page = !parseInt(query?.page) ? 1 : parseInt(query.page),
             limit = !parseInt(query?.limit) ? 10 : parseInt(query?.limit),
@@ -57,8 +54,8 @@ export default {
                 skip: (page - 1) * limit,
                 take: limit
             })).map(data => {
-                const { deleted, createdAt, entrepriseId, updatedAt, password, Entreprise, ...infos } = data;
-                return { ...infos };
+                const { deleted, createdAt, etablissementId, updatedAt, password, ...infos } = data;
+                return infos
             });
 
         return {
@@ -70,73 +67,78 @@ export default {
             list
         }
     },
-
-    // get by ID
-    getByID: async (userID) => {
+    // GetById
+    getByID: async (id) => {
         return await user.findUnique({
-            where: { id: userID }
-        })
+            where: { id }
+        });
     },
-
-    // update
-    update: async (userID, userData) => {
+    // Update
+    update: async (id, data) => {
         return await user.update({
-            where: { id: userID },
-            data: userData
-        })
+            where: { id }, data
+        });
     },
-
-    // update password
-    updatePassword: async (userID, old, password) => {
-        const userData = await user.findUnique({
-            where: { id: userID }
+    // Update password
+    updatePassword: async (id, data) => {
+        const userInfo = await user.findUnique({
+            where: { id }
         });
 
-        if (!userData)
+        if (!userInfo)
             throw `ID user invalide...`;
 
-        if (!compareSync(old, userData?.password))
+        if (!compareSync(data?.oldPassword, userInfo?.password))
             throw `Ancien mot de passe invalide...`;
 
         return await user.update({
-            where: { id: userID },
-            data: { password: hashSync(password, genSaltSync(10)) }
+            where: { id },
+            data: { password: hashSync(data?.newPassword, genSaltSync(10)) }
         })
     },
-
     // reset password
-    resetPassword: async (userID) => {
+    resetPassword: async (id) => {
         const password = generate({ numbers: true, length: 15, strict: true });
         await user.update({
-            where: { id: userID },
+            where: { id },
             data: { password: hashSync(password, genSaltSync(10)) }
         });
-        return {
-            newpassword: password
-        }
+        return { newpassword: password }
     },
 
     // toggle
-    toggle: async (userID) => {
-        const userData = await user?.findUnique({
-            where: { id: userID },
+    toggle: async (id) => {
+        const data = await user?.findUnique({
+            where: { id },
         });
 
-        if (!userData)
+        if (!data)
             throw `Compte utilisateur introuvable.`;
 
         return (await user?.update({
-            where: { id: userID },
-            data: { active: !userData?.active },
+            where: { id },
+            data: { active: !data?.active },
         }))?.active;
 
     },
-
-    // delete
-    delete: async (userID) => {
-        await user.update({
-            where: { id: userID },
+    // Delete
+    delete: async (id) => {
+        return await user.update({
+            where: { id },
             data: { deleted: true }
-        })
+        });
+    },
+    // DeleteMany
+    deleteMany: async (ids) => {
+        return await user.updateMany({
+            where: { id: { in: ids } },
+            data: { deleted: true }
+        });
+    },
+    // DeleteAll
+    deleteAll: async () => {
+        return await user.updateMany({
+            data: { deleted: true }
+        });
     }
-}
+};
